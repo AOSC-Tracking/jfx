@@ -35,7 +35,7 @@
 #include "Mutex.h"
 #include "PerHeapKind.h"
 #include "Scavenger.h"
-
+#include <cstdio>
 #if BUSE(LIBPAS)
 #include "bmalloc_heap_inlines.h"
 #endif
