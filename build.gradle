@@ -332,7 +332,7 @@ ext.MODULESOURCEPATH = "modulesourcepath.args"
 // These variables indicate what platform is running the build. Is
 // this build running on a Mac, Windows, or Linux machine? 32 or 64 bit?
 ext.OS_NAME = System.getProperty("os.name").toLowerCase()
-ext.OS_ARCH = System.getProperty("os.arch")
+ext.OS_ARCH = 'uname -m'.execute().text.trim()
 ext.ARCH_NAME = "x64"
 ext.IS_64 = OS_ARCH.toLowerCase().contains("64")
 ext.IS_AARCH64 = OS_ARCH.toLowerCase().contains("aarch64")
@@ -4077,20 +4077,7 @@ project(":web") {
                     } else if (t.name == "mac") {
                         cmakeArgs = " $cmakeArgs -DCMAKE_OSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION -DCMAKE_OSX_SYSROOT=$MACOSX_SDK_PATH"
                     } else if (t.name == "linux") {
-                        cmakeArgs = " $cmakeArgs -DCMAKE_SYSTEM_NAME=Linux"
-                        if (IS_64) {
-                            if (IS_AARCH64) {
-                                cmakeArgs = "$cmakeArgs -DCMAKE_SYSTEM_PROCESSOR=aarch64"
-                            } else if (IS_LOONGARCH64) {
-                                cmakeArgs = "$cmakeArgs -DCMAKE_SYSTEM_PROCESSOR=loongarch64"
-                            } else if (IS_RISCV64) {
-                                cmakeArgs = "$cmakeArgs -DCMAKE_SYSTEM_PROCESSOR=riscv64"
-                            } else {
-                                cmakeArgs = "$cmakeArgs -DCMAKE_SYSTEM_PROCESSOR=x86_64"
-                            }
-                        } else {
-                            cmakeArgs = "$cmakeArgs -DCMAKE_SYSTEM_PROCESSOR=i586"
-                        }
+                        cmakeArgs = " $cmakeArgs -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_SYSTEM_PROCESSOR=$TARGET_ARCH"
                         // TODO: Use cflags and ldflags from all platforms
                         def cFlags = webkitProperties.ccFlags?.join(' ') ?: ''
                         def lFlags = webkitProperties.linkFlags?.join(' ') ?: ''
